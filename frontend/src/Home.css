@@ -1,37 +1,74 @@
+/* Home.css */
+/* Remove these lines from `body` */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.home-wrapper {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
 .home-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-color: #10172a;
-    color: #ffffff;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  
-  .home-title {
-    font-size: 2.5rem;
-    margin-bottom: 2rem;
-    color: #00bfff;
-  }
-  
-  .home-options {
-    display: flex;
-    gap: 20px;
-  }
-  
-  .home-btn {
-    padding: 10px 20px;
-    font-size: 1.1rem;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    background-color: #2563eb;
-    color: white;
-    transition: background-color 0.3s ease;
-  }
-  
-  .home-btn:hover {
-    background-color: #1e40af;
-  }
-  
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 40px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.home-title {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 15px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  outline: none;
+  transition: box-shadow 0.3s ease;
+}
+
+.input:focus {
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+}
+
+.home-btn {
+  background-color: #ffffff;
+  color: #333;
+  padding: 12px 20px;
+  margin: 10px 5px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.home-btn:hover {
+  background-color: #e0e0e0;
+  transform: scale(1.05);
+}
+
+.home-options {
+  margin-top: 20px;
+}
