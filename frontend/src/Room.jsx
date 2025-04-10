@@ -4,12 +4,12 @@ import { io } from 'socket.io-client';
 import { AuthContext } from './AuthContext';
 import './Room.css';
 
-const socket = io('http://localhost:3001');
-
 function Room() {
   const { id: room } = useParams();
   const { username } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  const socketRef = useRef(null);
 
   const [message, setMessage] = useState('');
   const [chat, setChat] = useState([]);
@@ -17,19 +17,39 @@ function Room() {
 
   useEffect(() => {
     if (!username) {
-      // If user directly opens /room/:id without entering name, redirect to home
       navigate('/');
       return;
     }
 
-    socket.emit('join_room', { username, room });
+    // Connect socket only once
+    if (!socketRef.current) {
+      socketRef.current = io('http://localhost:5000');
+    }
 
-    socket.on('receive_message', (data) => {
-      setChat((prev) => [...prev, data]);
+    const socket = socketRef.current;
+
+    // Join room
+    socket.emit('join-room', room);
+
+    // Room not found
+    socket.on('error-room-not-found', (roomCode) => {
+      alert(`❌ Room with code ${roomCode} does not exist!`);
+      navigate('/');
+    });
+
+    // Incoming messages from server
+    socket.on('chat-message', (data) => {
+      const formatted = {
+        username: data.username,
+        message: data.content,
+        time: new Date(data.timestamp).toLocaleTimeString(),
+      };
+      setChat((prev) => [...prev, formatted]);
     });
 
     return () => {
-      socket.off('receive_message');
+      socket.disconnect();
+      socketRef.current = null;
     };
   }, [room, username, navigate]);
 
@@ -38,15 +58,16 @@ function Room() {
   }, [chat]);
 
   const sendMessage = () => {
-    if (message.trim()) {
+    const socket = socketRef.current;
+
+    if (message.trim() && socket) {
       const msgData = {
         username,
-        room,
-        message,
-        time: new Date().toLocaleTimeString(),
+        content: message,
+        roomCode: room,
       };
-      socket.emit('send_message', msgData);
-      setChat((prev) => [...prev, msgData]);
+
+      socket.emit('chat-message', msgData); // Send to server only
       setMessage('');
     }
   };

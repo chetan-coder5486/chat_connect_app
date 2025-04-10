@@ -9,25 +9,47 @@ function Home() {
   const [roomId, setRoomId] = useState('');
   const [showJoinInput, setShowJoinInput] = useState(false);
 
-  const createRoom = () => {
+  const createRoom = async () => {
     if (!username.trim()) {
       alert('Please enter your name first');
       return;
     }
-    const newRoomId = Math.floor(100000 + Math.random() * 900000);
-    navigate(`/room/${newRoomId}`);
+
+    try {
+      const res = await fetch('http://localhost:5000/rooms/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      const data = await res.json();
+      navigate(`/room/${data.roomCode}`);
+    } catch (err) {
+      console.error(err);
+      alert('Something went wrong while creating the room');
+    }
   };
 
-  const handleJoin = () => {
+  const handleJoin = async () => {
     if (!username.trim()) {
       alert('Please enter your name first');
       return;
     }
+
     if (!/^\d{6}$/.test(roomId)) {
       alert('Please enter a valid 6-digit Room ID');
       return;
     }
-    navigate(`/room/${roomId}`);
+
+    try {
+      const res = await fetch(`http://localhost:5000/rooms/join/${roomId}`);
+      if (!res.ok) {
+        throw new Error('Room not found');
+      }
+
+      navigate(`/room/${roomId}`);
+    } catch (err) {
+      alert(`❌ Room with code ${roomId} does not exist!`);
+    }
   };
 
   return (
